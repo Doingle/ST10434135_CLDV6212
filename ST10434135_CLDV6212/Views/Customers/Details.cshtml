@@ -1,4 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Customers";
-}
-<h2>Customer List</h2>
+﻿@model ST10434135_CLDV6212.Models.Customer
+
+<h2>Customer Details</h2>
+
+<div>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Phone:</strong> @Model.Phone</p>
+</div>
+
+<a asp-action="Edit" asp-route-partitionKey="@Model.PartitionKey" asp-route-rowKey="@Model.RowKey" class="btn btn-primary">Edit</a>
+<a asp-action="Delete" asp-route-partitionKey="@Model.PartitionKey" asp-route-rowKey="@Model.RowKey" class="btn btn-danger">Delete</a>
+<a asp-action="Index" class="btn btn-secondary">Back to List</a>

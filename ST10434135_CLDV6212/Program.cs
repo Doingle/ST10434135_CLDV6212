@@ -1,7 +1,17 @@
+using ST10434135_CLDV6212.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
+#region Configuration and Services
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Added the Azure Table Storage service
+builder.Services.AddSingleton<TableStorageService>();
+
+#endregion
+
 
 var app = builder.Build();
 

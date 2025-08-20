@@ -1,5 +1,32 @@
-﻿@{
-    ViewData["Title"] = "Customers";
-}
-<h2>Customer List</h2>
+﻿@model IEnumerable<ST10434135_CLDV6212.Models.Customer>
+
+
+<h2>Customers</h2>
+<a href="/Customers/Create" class="btn btn-primary">Add Customer</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Email</td>
+                <td>@item.Phone</td>
+                <td>
+                    <a asp-action="Details" asp-route-partitionKey="@item.PartitionKey" asp-route-rowKey="@item.RowKey">Details</a> |
+                    <a asp-action="Edit" asp-route-partitionKey="@item.PartitionKey" asp-route-rowKey="@item.RowKey">Edit</a> |
+                    <a asp-action="Delete" asp-route-partitionKey="@item.PartitionKey" asp-route-rowKey="@item.RowKey">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
