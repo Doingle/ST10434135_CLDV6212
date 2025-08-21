@@ -1,5 +1,17 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model ST10434135_CLDV6212.Models.Contract
+
 @{
+    ViewData["Title"] = "Upload Contract";
 }
+
+<h2>Upload Contract</h2>
+
+<form asp-action="Upload" enctype="multipart/form-data" method="post">
+    <div class="form-group">
+        <label for="contractFile">Choose Contract File</label>
+        <input type="file" name="contractFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Upload</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

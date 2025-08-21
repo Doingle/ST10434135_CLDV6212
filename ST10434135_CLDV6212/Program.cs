@@ -13,6 +13,10 @@ builder.Services.AddSingleton<TableStorageService>();
 //Added the Azure Blob Storage service
 builder.Services.AddSingleton<BlobStorageService>();
 
+//Added the Azure File Storage service
+builder.Services.AddSingleton<FileShareService>();
+
+
 #endregion
 
 
