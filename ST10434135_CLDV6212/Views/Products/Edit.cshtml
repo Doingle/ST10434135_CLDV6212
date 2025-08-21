@@ -1,12 +1,15 @@
 ﻿@model ST10434135_CLDV6212.Models.Product
 
 @{
-    ViewData["Title"] = "Create Product";
+    ViewData["Title"] = "Edit Product";
 }
 
-<h2>Create Product</h2>
+<h2>Edit Product</h2>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
+<form asp-action="Edit" enctype="multipart/form-data">
+    <input type="hidden" asp-for="PartitionKey" />
+    <input type="hidden" asp-for="RowKey" />
+
     <div class="form-group">
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
@@ -36,8 +39,15 @@
         <input type="file" name="imageFile" class="form-control" />
     </div>
 
+    @if (Model.ImageUrl != null)
+    {
+        <div>
+            <img src="@Model.ImageUrl" alt="Product Image" style="max-width:200px;" />
+        </div>
+    }
 
-    <button type="submit" class="btn btn-success">Save</button>
+
+    <button type="submit" class="btn btn-primary">Update</button>
     <a asp-action="Index" class="btn btn-secondary">Cancel</a>
 </form>
 

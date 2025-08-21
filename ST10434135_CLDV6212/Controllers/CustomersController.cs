@@ -8,9 +8,10 @@ namespace ST10434135_CLDV6212.Controllers
 {
     public class CustomersController : Controller
     {
-
         private readonly TableStorageService _tableService;
 
+        // specify which table this controller uses
+        private const string TableName = "Customers";
 
         public CustomersController(TableStorageService tableService)
         {
@@ -20,7 +21,7 @@ namespace ST10434135_CLDV6212.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            var customers = await _tableService.GetCustomersAsync();
+            var customers = await _tableService.GetEntitiesAsync<Customer>(TableName);
             return View(customers);
         }
 
@@ -30,10 +31,7 @@ namespace ST10434135_CLDV6212.Controllers
             return View();
         }
 
-        //create action
-        //---------------------------------------------------------------------------
-
-        //create post method for creating a customer
+        // POST: Customers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Customer customer)
@@ -44,7 +42,7 @@ namespace ST10434135_CLDV6212.Controllers
                 customer.PartitionKey = "CUSTOMER";
                 customer.RowKey = Guid.NewGuid().ToString();
 
-                await _tableService.AddCustomerAsync(customer);
+                await _tableService.AddEntityAsync(TableName, customer);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -52,24 +50,10 @@ namespace ST10434135_CLDV6212.Controllers
             return View(customer);
         }
 
-
-
-
-
-        //details, edit, and delete methods for customers
-        //---------------------------------------------------------------------------
-
-        // GET: Details
+        // GET: Customers/Details
         public async Task<IActionResult> Details(string partitionKey, string rowKey)
         {
-            var customer = await _tableService.GetCustomerAsync(partitionKey, rowKey);
-            return View(customer);
-        }
-
-        // GET: Customers/Edit
-        public async Task<IActionResult> Edit(string partitionKey, string rowKey)
-        {
-            var customer = await _tableService.GetCustomerAsync(partitionKey, rowKey);
+            var customer = await _tableService.GetEntityAsync<Customer>(TableName, partitionKey, rowKey);
             if (customer == null)
             {
                 return NotFound();
@@ -77,7 +61,16 @@ namespace ST10434135_CLDV6212.Controllers
             return View(customer);
         }
 
-
+        // GET: Customers/Edit
+        public async Task<IActionResult> Edit(string partitionKey, string rowKey)
+        {
+            var customer = await _tableService.GetEntityAsync<Customer>(TableName, partitionKey, rowKey);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+            return View(customer);
+        }
 
         // POST: Customers/Edit
         [HttpPost]
@@ -91,7 +84,7 @@ namespace ST10434135_CLDV6212.Controllers
 
             try
             {
-                await _tableService.UpdateCustomerAsync(customer);
+                await _tableService.UpdateEntityAsync(TableName, customer);
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -101,24 +94,24 @@ namespace ST10434135_CLDV6212.Controllers
             }
         }
 
-
-
-
-        // GET: Delete
+        // GET: Customers/Delete
         public async Task<IActionResult> Delete(string partitionKey, string rowKey)
         {
-            var customer = await _tableService.GetCustomerAsync(partitionKey, rowKey);
+            var customer = await _tableService.GetEntityAsync<Customer>(TableName, partitionKey, rowKey);
+            if (customer == null)
+            {
+                return NotFound();
+            }
             return View(customer);
         }
 
-        // POST: DeleteConfirmed
+        // POST: Customers/DeleteConfirmed
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string partitionKey, string rowKey)
         {
-            await _tableService.DeleteCustomerAsync(partitionKey, rowKey);
+            await _tableService.DeleteEntityAsync(TableName, partitionKey, rowKey);
             return RedirectToAction(nameof(Index));
         }
     }
 }
-

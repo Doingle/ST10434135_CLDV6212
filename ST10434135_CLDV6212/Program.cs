@@ -10,6 +10,9 @@ builder.Services.AddControllersWithViews();
 //Added the Azure Table Storage service
 builder.Services.AddSingleton<TableStorageService>();
 
+//Added the Azure Blob Storage service
+builder.Services.AddSingleton<BlobStorageService>();
+
 #endregion
 
 
