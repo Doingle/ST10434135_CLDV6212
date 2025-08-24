@@ -29,6 +29,7 @@ namespace ST10434135_CLDV6212.Services
             return fileClient.Uri.ToString();
         }
 
+        //Download file as a stream, updated as upon download the process (application) was terminated without any error
         public async Task<Stream> DownloadFileAsync(string uniqueFileName)
         {
             if (string.IsNullOrEmpty(uniqueFileName))
@@ -38,8 +39,14 @@ namespace ST10434135_CLDV6212.Services
             var fileClient = directory.GetFileClient(uniqueFileName);
 
             var download = await fileClient.DownloadAsync();
-            return download.Value.Content;
+
+            // Copy Azure stream into memory
+            var memoryStream = new MemoryStream();
+            await download.Value.Content.CopyToAsync(memoryStream);
+            memoryStream.Position = 0; // Reset pointer for ASP.NET to read
+            return memoryStream;
         }
+
 
         public async Task DeleteFileAsync(string uniqueFileName)
         {

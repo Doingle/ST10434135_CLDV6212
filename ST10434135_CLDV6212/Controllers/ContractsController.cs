@@ -42,8 +42,8 @@ namespace ST10434135_CLDV6212.Controllers
                 {
                     PartitionKey = "CONTRACT",
                     RowKey = rowKey,
-                    FileName = contractFile.FileName,   // user-friendly name
-                    StoredFileName = uniqueFileName,    // actual name in Azure
+                    FileName = contractFile.FileName,   
+                    StoredFileName = uniqueFileName,    
                     FileUrl = fileUrl,
                     UploadedOn = DateTime.UtcNow
                 };
@@ -58,14 +58,23 @@ namespace ST10434135_CLDV6212.Controllers
 
 
         // GET: Contracts/Download
+        //downloads buffered into memory to avoid process termination without error, unscalable implementation, however, works for small contract files
+        //which is what the scenario is limited to. If errors occur, this issue should be revisited.
         public async Task<IActionResult> Download(string partitionKey, string rowKey)
         {
             var contract = await _tableService.GetEntityAsync<Contract>(TableName, partitionKey, rowKey);
             if (contract == null) return NotFound();
 
-            var stream = await _fileShareService.DownloadFileAsync(contract.StoredFileName);
-            return File(stream, "application/octet-stream", contract.FileName);
+            using var stream = await _fileShareService.DownloadFileAsync(contract.StoredFileName);
+
+            //copy stream to byte array which is buffered in memory
+            using var ms = new MemoryStream();
+            await stream.CopyToAsync(ms);
+            var fileBytes = ms.ToArray();
+
+            return File(fileBytes, "application/octet-stream", contract.FileName);
         }
+
 
 
 

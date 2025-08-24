@@ -16,6 +16,8 @@ builder.Services.AddSingleton<BlobStorageService>();
 //Added the Azure File Storage service
 builder.Services.AddSingleton<FileShareService>();
 
+///Added the Order service (seperate from TableStorageService for business logic)
+builder.Services.AddScoped<OrderService>();
 
 #endregion
 

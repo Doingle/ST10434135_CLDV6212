@@ -1,5 +1,28 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model ST10434135_CLDV6212.Models.Order
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="customerId">Customer</label>
+        <select asp-for="CustomerId"
+                asp-items="@(ViewData["Customers"] as List<SelectListItem>)"
+                class="form-control" required>
+            <option value="">-- Select Customer --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="productId">Product</label>
+        <select asp-for="ProductId"
+                asp-items="@(ViewData["Products"] as List<SelectListItem>)"
+                class="form-control" required>
+            <option value="">-- Select Product --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input asp-for="Quantity" class="form-control" min="1" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Order</button>
+</form>

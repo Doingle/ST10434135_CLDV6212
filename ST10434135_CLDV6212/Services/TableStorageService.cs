@@ -68,5 +68,19 @@ namespace ST10434135_CLDV6212.Services
             var client = GetTableClient(tableName);
             await client.DeleteEntityAsync(partitionKey, rowKey);
         }
+
+        public async Task<List<T>> GetAllEntitiesAsync<T>(string tableName) where T : class, ITableEntity, new()
+        {
+            var tableClient = GetTableClient(tableName);
+            var result = new List<T>();
+
+            await foreach (var entity in tableClient.QueryAsync<T>())
+            {
+                result.Add(entity);
+            }
+
+            return result;
+        }
+
     }
 }
