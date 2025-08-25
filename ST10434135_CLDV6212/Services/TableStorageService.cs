@@ -11,9 +11,13 @@ namespace ST10434135_CLDV6212.Services
 
         private readonly TableServiceClient _serviceClient;
 
-        public TableStorageService(IConfiguration configuration)
+        // inject QueueService to send messages on data changes
+        private readonly QueueService _queueService;
+
+        public TableStorageService(IConfiguration configuration, QueueService queueService)
         {
             var connString = configuration.GetConnectionString("AzureStorage");
+            _queueService = queueService;
             _serviceClient = new TableServiceClient(connString);
         }
 
@@ -30,6 +34,15 @@ namespace ST10434135_CLDV6212.Services
         {
             var client = GetTableClient(tableName);
             await client.AddEntityAsync(entity);
+
+            //injection of queue service. add a message into the queue after adding an entity
+            await _queueService.SendMessageAsync(new QueueMessage
+            {
+                EventType = "EntityCreated",
+                EntityId = entity.RowKey,
+                Message = $"{typeof(T).Name} created"
+            });
+
         }
 
         // Generic Get All
@@ -60,6 +73,15 @@ namespace ST10434135_CLDV6212.Services
 
             var client = GetTableClient(tableName);
             await client.UpdateEntityAsync(entity, ETag.All, TableUpdateMode.Replace);
+
+            //injection of queue service. add a message into the queue after updating an entity
+            await _queueService.SendMessageAsync(new QueueMessage
+            {
+                EventType = "EntityUpdated",
+                EntityId = entity.RowKey,
+                Message = $"{typeof(T).Name} updated"
+            });
+
         }
 
         // Generic Delete
@@ -67,6 +89,14 @@ namespace ST10434135_CLDV6212.Services
         {
             var client = GetTableClient(tableName);
             await client.DeleteEntityAsync(partitionKey, rowKey);
+
+            await _queueService.SendMessageAsync(new QueueMessage
+            {
+                EventType = "EntityDeleted",
+                EntityId = rowKey,
+                Message = $"Entity deleted"
+            });
+
         }
 
         public async Task<List<T>> GetAllEntitiesAsync<T>(string tableName) where T : class, ITableEntity, new()

@@ -7,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//Added the Azure Queue service
+//added before Table service as Order service uses both
+builder.Services.AddSingleton<QueueService>();
+
 //Added the Azure Table Storage service
 builder.Services.AddSingleton<TableStorageService>();
 

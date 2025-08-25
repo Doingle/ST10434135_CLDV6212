@@ -1,5 +1,6 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using ST10434135_CLDV6212.Models;
 
 namespace ST10434135_CLDV6212.Services
 {
@@ -7,8 +8,13 @@ namespace ST10434135_CLDV6212.Services
     {
         private readonly BlobContainerClient _containerClient;
 
-        public BlobStorageService(IConfiguration configuration)
+        // inject QueueService to send messages on data changes
+        private readonly QueueService _queueService;
+
+        public BlobStorageService(IConfiguration configuration, QueueService queueService)
         {
+            _queueService = queueService;
+
             var connectionString = configuration.GetConnectionString("AzureStorage");
             var blobServiceClient = new BlobServiceClient(connectionString);
 
@@ -32,6 +38,15 @@ namespace ST10434135_CLDV6212.Services
             {
                 await blobClient.UploadAsync(stream, overwrite: true);
             }
+
+            await _queueService.SendMessageAsync(new QueueMessage
+            {
+                EventType = "ProductImageUploaded",
+                EntityId = rowKey,
+                Message = $"Image uploaded for product {rowKey} (blob: {blobName})",
+                RelatedId = blobName 
+            });
+
 
             return (blobClient.Uri.ToString(), blobName);
         }

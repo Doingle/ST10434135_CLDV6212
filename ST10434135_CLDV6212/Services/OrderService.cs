@@ -4,14 +4,19 @@ namespace ST10434135_CLDV6212.Services
 {
     public class OrderService
     {
+        // inject QueueService to send messages on data changes
+        private readonly QueueService _queueService;
+
+        //all service references, with queue service above
         private readonly TableStorageService _tableService;
         private readonly string _ordersTable = "Orders";
         private readonly string _productsTable = "Products";
         private readonly string _customersTable = "Customers";
 
-        public OrderService(TableStorageService tableService)
+        public OrderService(TableStorageService tableService, QueueService queueService)
         {
             _tableService = tableService;
+            _queueService = queueService;
         }
 
         // Create Order
@@ -76,7 +81,9 @@ namespace ST10434135_CLDV6212.Services
             var order = await _tableService.GetEntityAsync<Order>(_ordersTable, "ORDER", orderId);
             if (order == null) return false;
 
-            if (newStatus == "Cancelled" && order.Status != "Cancelled")
+            var oldStatus = order.Status; // ✅ capture before overwriting
+
+            if (newStatus == "Cancelled" && oldStatus != "Cancelled")
             {
                 // Reallocate stock
                 var product = await _tableService.GetEntityAsync<Product>(_productsTable, "PRODUCT", order.ProductId);
@@ -89,10 +96,23 @@ namespace ST10434135_CLDV6212.Services
 
             order.Status = newStatus;
             order.UpdatedOn = DateTime.UtcNow;
+
+            // ✅ Save once
             await _tableService.UpdateEntityAsync(_ordersTable, order);
+
+            // ✅ Push queue message with correct old/new values
+            await _queueService.SendMessageAsync(new QueueMessage
+            {
+                EventType = "OrderStatusChanged",
+                EntityId = order.RowKey!,
+                Message = $"Order status changed from {oldStatus} to {newStatus}",
+                RelatedId = order.PartitionKey,
+                Timestamp = DateTime.UtcNow
+            });
 
             return true;
         }
+
 
         // Delete order (optionally reallocate stock)
         public async Task DeleteOrderAsync(string orderId)
@@ -123,18 +143,32 @@ namespace ST10434135_CLDV6212.Services
 
             foreach (var order in orders)
             {
-                var customer = await _tableService.GetEntityAsync<Customer>(_customersTable, "CUSTOMER", order.CustomerId!);
-                var product = await _tableService.GetEntityAsync<Product>(_productsTable, "PRODUCT", order.ProductId!);
+                try
+                {
+                    var customer = await _tableService.GetEntityAsync<Customer>(_customersTable, "CUSTOMER", order.CustomerId!);
+                    order.CustomerName = customer?.Name ?? "Unknown";
+                }
+                catch
+                {
+                    order.CustomerName = "Unknown"; // missing customer
+                }
 
-                // Fill in CustomerName and ProductName
-                order.CustomerName = customer?.Name ?? "Unknown";
-                order.ProductName = product?.Name ?? "Unknown";
+                try
+                {
+                    var product = await _tableService.GetEntityAsync<Product>(_productsTable, "PRODUCT", order.ProductId!);
+                    order.ProductName = product?.Name ?? "Unknown";
+                }
+                catch
+                {
+                    order.ProductName = "Unknown"; // missing product
+                }
 
                 result.Add(order);
             }
 
             return result;
         }
+
 
 
         // ✅ Helper for Create dropdowns
