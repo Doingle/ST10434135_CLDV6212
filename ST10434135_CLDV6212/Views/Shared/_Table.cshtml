@@ -1,0 +1,32 @@
+﻿@model IEnumerable<dynamic>
+
+<table class="table custom-table shadow-sm">
+    <thead class="table-header">
+        <tr>
+            @foreach (var prop in Model.FirstOrDefault()?.GetType().GetProperties() ?? Enumerable.Empty<System.Reflection.PropertyInfo>())
+            {
+                <th>@prop.Name</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @foreach (var prop in item.GetType().GetProperties())
+                {
+                    if (prop.Name.ToLower().Contains("image"))  
+                    {
+                        <td>
+                            <img src="@prop.GetValue(item)" alt="Image" class="img-thumbnail" style="max-width: 80px;" />
+                        </td>
+                    }
+                    else
+                    {
+                        <td>@prop.GetValue(item)</td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>

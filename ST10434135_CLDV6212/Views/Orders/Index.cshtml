@@ -3,10 +3,10 @@
 <h2>Orders</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New Order</a>
+    <a asp-action="Create" class="btn btn-primary mb-3">Create New Order</a>
 </p>
 
-<table class="table table-striped">
+<table class="table custom-table shadow-sm">
     <thead>
         <tr>
             <th>Customer</th>
@@ -14,36 +14,37 @@
             <th>Quantity</th>
             <th>Status</th>
             <th>Created On</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var order in Model)
-{
-        <tr>
-            <td>@order.CustomerName</td>
-            <td>@order.ProductName</td>
-            <td>@order.Quantity</td>
-            <td>@order.Status</td>
-            <td>@order.CreatedOn</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@order.RowKey" class="btn btn-sm btn-warning">Edit</a>
-                <a asp-action="Details" asp-route-id="@order.RowKey" class="btn btn-info btn-sm">Details</a>
-                <form asp-action="UpdateStatus" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="@order.RowKey" />
-                    <select name="status" onchange="this.form.submit()" class="form-control form-control-sm d-inline w-auto">
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.CustomerName</td>
+                <td>@order.ProductName</td>
+                <td>@order.Quantity</td>
+                <td>
+                    <form asp-action="UpdateStatus" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@order.RowKey" />
+                        <select name="status" onchange="this.form.submit()" class="form-select form-select-sm d-inline w-auto">
                             <option value="Created" selected="@(order.Status == "Created")">Created</option>
                             <option value="Processing" selected="@(order.Status == "Processing")">Processing</option>
                             <option value="Completed" selected="@(order.Status == "Completed")">Completed</option>
                             <option value="Cancelled" selected="@(order.Status == "Cancelled")">Cancelled</option>
-                    </select>
-                </form>
-                <form asp-action="Delete" method="post" style="display:inline;">
-                    <input type="hidden" name="id" value="@order.RowKey" />
-                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                </form>
-            </td>
-        </tr>
-}
+                        </select>
+                    </form>
+                </td>
+                <td>@order.CreatedOn</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@order.RowKey" class="btn btn-sm btn-outline-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@order.RowKey" class="btn btn-sm btn-outline-warning">Edit</a>
+                    <form asp-action="Delete" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@order.RowKey" />
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

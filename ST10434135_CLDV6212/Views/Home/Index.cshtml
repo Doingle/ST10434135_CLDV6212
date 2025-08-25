@@ -1,15 +1,70 @@
 ﻿@{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Home - ABC Retail Order Processing System by ST10434135";
 }
 
-<div class="text-center">
-    <h1 class="display-4">ABC retail Management System</h1>
-    <p>A new advanced retail management system for ABC retials products and services.</a>.</p>
-</div>
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg" style="background-color: #2f4f4f;">
+    <div class="container-fluid">
+        <a class="navbar-brand text-white fw-bold" href="/">ABC Retail</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link text-white" href="#customers">Customers</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#products">Products</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#orders">Orders</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#contracts">Contracts</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
-<ul>
-    <li><a href="/Customers">Customers</a></li>
-    <li><a href="/Products">Products</a></li>
-    <li><a href="/Contracts">Contracts</a></li>
-    <li><a href="/Orders">Orders</a></li>
-</ul>
+<!-- Hero Section -->
+<section class="text-center py-5" style="background-color: #40e0d0; color: white;">
+    <div class="container">
+        <h1 class="fw-bold">Welcome to ABC Retail</h1>
+        <p class="lead">A modern cloud-based Order Processing System By ST10434135</p>
+    </div>
+</section>
+
+<!-- Customers -->
+<section id="customers" class="py-5" style="background-color: #f8f9fa;">
+    <div class="container text-center">
+        <h2 class="fw-bold text-dark">Customers</h2>
+        <p class="text-muted">Manage your customer details with ease. Add, update, and view customer records securely stored in Azure Table Storage.</p>
+        <a href="/Customers" class="btn btn-outline-info">Go to Customers</a>
+    </div>
+</section>
+
+<!-- Products -->
+<section id="products" class="py-5" style="background-color: #e9ecef;">
+    <div class="container text-center">
+        <h2 class="fw-bold text-dark">Products</h2>
+        <p class="text-muted">Keep track of your product catalog, upload product images to Azure Blob Storage, and manage stock seamlessly.</p>
+        <a href="/Products" class="btn btn-outline-info">Go to Products</a>
+    </div>
+</section>
+
+<!-- Orders -->
+<section id="orders" class="py-5" style="background-color: #f8f9fa;">
+    <div class="container text-center">
+        <h2 class="fw-bold text-dark">Orders</h2>
+        <p class="text-muted">Create, cancel, and track orders in real-time with automatic stock management and Azure Queue notifications.</p>
+        <a href="/Orders" class="btn btn-outline-info">Go to Orders</a>
+    </div>
+</section>
+
+<!-- Contracts -->
+<section id="contracts" class="py-5" style="background-color: #e9ecef;">
+    <div class="container text-center">
+        <h2 class="fw-bold text-dark">Contracts</h2>
+        <p class="text-muted">Manage agreements and contracts with customers for long-term business operations.</p>
+        <a href="/Contracts" class="btn btn-outline-info">Go to Contracts</a>
+    </div>
+</section>
+
+<!-- Footer -->
+@* <footer class="text-center py-3" style="background-color: #2f4f4f; color: white;">
+    <p class="mb-0">© @DateTime.Now.Year ABC Retail. Built By ST10434135.</p>
+</footer> *@
