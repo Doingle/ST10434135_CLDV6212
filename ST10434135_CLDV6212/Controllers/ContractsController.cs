@@ -6,26 +6,31 @@ namespace ST10434135_CLDV6212.Controllers
 {
     public class ContractsController : Controller
     {
+        //this is the dependency injection of the services to interact with Azure Table Storage and Azure File Share
         private readonly TableStorageService _tableService;
         private readonly FileShareService _fileShareService;
         private const string TableName = "Contracts";
 
+        //constructor
         public ContractsController(TableStorageService tableService, FileShareService fileShareService)
         {
             _tableService = tableService;
             _fileShareService = fileShareService;
         }
 
-        // GET: Contracts
+        //------------------------------------------------------------------------------------------------------------
+        //this is the GET : Index action to list all contracts
         public async Task<IActionResult> Index()
         {
             var contracts = await _tableService.GetEntitiesAsync<Contract>(TableName);
             return View(contracts);
         }
 
-        // GET: Upload
+        //------------------------------------------------------------------------------------------------------------
+        //this is the GET : Upload action to show the upload form
         public IActionResult Upload() => View();
 
+        //------------------------------------------------------------------------------------------------------------
         // POST: Upload
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -55,9 +60,8 @@ namespace ST10434135_CLDV6212.Controllers
             return View();
         }
 
-
-
-        // GET: Contracts/Download
+        //------------------------------------------------------------------------------------------------------------
+        //this is the GET : Download action to download a contract file
         //downloads buffered into memory to avoid process termination without error, unscalable implementation, however, works for small contract files
         //which is what the scenario is limited to. If errors occur, this issue should be revisited.
         public async Task<IActionResult> Download(string partitionKey, string rowKey)
@@ -75,19 +79,16 @@ namespace ST10434135_CLDV6212.Controllers
             return File(fileBytes, "application/octet-stream", contract.FileName);
         }
 
-
-
-
-
-
-        // GET: Delete
+        //------------------------------------------------------------------------------------------------------------
+        //this is the GET : Delete action to confirm deletion of a contract
         public async Task<IActionResult> Delete(string partitionKey, string rowKey)
         {
             var contract = await _tableService.GetEntityAsync<Contract>(TableName, partitionKey, rowKey);
             return contract == null ? NotFound() : View(contract);
         }
 
-        // POST: DeleteConfirmed
+        //------------------------------------------------------------------------------------------------------------
+        //this is the POST : DeleteConfirmed action to delete a contract
         [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string partitionKey, string rowKey)
@@ -105,3 +106,4 @@ namespace ST10434135_CLDV6212.Controllers
 
     }
 }
+//-------------------------------------------------------------------------EOF-------------------------------------------------------------------------------------\\
