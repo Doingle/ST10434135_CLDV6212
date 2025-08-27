@@ -2,6 +2,7 @@ using ST10434135_CLDV6212.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//region showing all cofigured and connected services
 #region Configuration and Services
 
 // Add services to the container.

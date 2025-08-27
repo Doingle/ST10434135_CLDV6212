@@ -5,15 +5,16 @@ using ST10434135_CLDV6212.Models;
 namespace ST10434135_CLDV6212.Services
 {
 
-    //Generalized the service to allow for multiple tables within an individual storage account
+    //this class is a generalised service for managing Azure Table Storage operations for customers, products, etc.
     public class TableStorageService
     {
-
+        //initialize TableServiceClient to interact with Azure Table Storage
         private readonly TableServiceClient _serviceClient;
 
         // inject QueueService to send messages on data changes
         private readonly QueueService _queueService;
 
+        //constructor to initialize TableServiceClient with connection string from configuration
         public TableStorageService(IConfiguration configuration, QueueService queueService)
         {
             var connString = configuration.GetConnectionString("AzureStorage");
@@ -21,7 +22,8 @@ namespace ST10434135_CLDV6212.Services
             _serviceClient = new TableServiceClient(connString);
         }
 
-        // Get a client for any table
+        //----------------------------------------------------------------------------------------------------------------------------------------------
+        //this method retrieves or creates a TableClient for the specified table name
         private TableClient GetTableClient(string tableName)
         {
             var client = _serviceClient.GetTableClient(tableName);
@@ -29,7 +31,8 @@ namespace ST10434135_CLDV6212.Services
             return client;
         }
 
-        // Generic Add
+        //----------------------------------------------------------------------------------------------------------------------------------------------
+        //this is a generic add method that adds an entity to the specified table and sends a message to the queue
         public async Task AddEntityAsync<T>(string tableName, T entity) where T : class, ITableEntity, new()
         {
             var client = GetTableClient(tableName);
@@ -45,7 +48,8 @@ namespace ST10434135_CLDV6212.Services
 
         }
 
-        // Generic Get All
+        //----------------------------------------------------------------------------------------------------------------------------------------------
+        //this is a generic get method that retrieves all entities from the specified table
         public async Task<List<T>> GetEntitiesAsync<T>(string tableName) where T : class, ITableEntity, new()
         {
             var client = GetTableClient(tableName);
@@ -57,7 +61,8 @@ namespace ST10434135_CLDV6212.Services
             return results;
         }
 
-        // Generic Get Single
+        //----------------------------------------------------------------------------------------------------------------------------------------------
+        //this is a generic get method that retrieves a single entity by partition key and row key from the specified table
         public async Task<T> GetEntityAsync<T>(string tableName, string partitionKey, string rowKey) where T : class, ITableEntity, new()
         {
             var client = GetTableClient(tableName);
@@ -65,7 +70,8 @@ namespace ST10434135_CLDV6212.Services
             return response.Value;
         }
 
-        // Generic Update
+        //----------------------------------------------------------------------------------------------------------------------------------------------
+        //this is a generic update method that updates an entity in the specified table and sends a message to the queue
         public async Task UpdateEntityAsync<T>(string tableName, T entity) where T : class, ITableEntity, new()
         {
             if (string.IsNullOrEmpty(entity.PartitionKey) || string.IsNullOrEmpty(entity.RowKey))
@@ -84,7 +90,8 @@ namespace ST10434135_CLDV6212.Services
 
         }
 
-        // Generic Delete
+        //----------------------------------------------------------------------------------------------------------------------------------------------
+        //this is a generic delete method that deletes an entity by partition key and row key from the specified table and sends a message to the queue
         public async Task DeleteEntityAsync(string tableName, string partitionKey, string rowKey)
         {
             var client = GetTableClient(tableName);
@@ -99,6 +106,8 @@ namespace ST10434135_CLDV6212.Services
 
         }
 
+        //----------------------------------------------------------------------------------------------------------------------------------------------
+        //this method retrieves all entities from the specified table (alternative to GetEntitiesAsync)
         public async Task<List<T>> GetAllEntitiesAsync<T>(string tableName) where T : class, ITableEntity, new()
         {
             var tableClient = GetTableClient(tableName);
@@ -114,3 +123,4 @@ namespace ST10434135_CLDV6212.Services
 
     }
 }
+//----------------------------------------------------------------EOF-----------------------------------------------------------------\\

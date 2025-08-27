@@ -1,0 +1,31 @@
+﻿REFERENCE LIST:
+
+Butt, M. (2021, August 22). Using Azure File Storage In C#. Retrieved from C# Corner: 
+https://www.c-sharpcorner.com/article/using-azure-file-storage-in-c-sharp/
+
+Used for: ContractsController.cs, Lines: 37 - 57. AzureFileShareService.cs, Lines: 23 - 38 and 69 -77.
+
+Joshi, N. (2021, August 20). Introduction To Model Binding in ASP.Net MVC: Part 1. Retrieved from C# Corner: 
+https://www.c-sharpcorner.com/UploadFile/4b0136/introduction-to-model-binding-in-Asp-Net-mvc/
+
+Used for: CustomersController.cs, Lines: 43 - 57. As well as reworked for other controller post create methods.
+
+OpenAI. (2025, August 20). ChatGPT 5.0 LLM. Retrieved from ChatGPT: 
+https://chatgpt.com/
+
+Used for: Generation of HTML code for views: Create.cshtml, Edit.cshtml, Details.cshtml, Index.cshtml, site.css for general layout and 
+styling as well as _Layout.cshtml for overall structure and navigation. ProductsController.cs, Lines: 45 - 59. OrdersController.cs, Lines: 34 - 54. as well as within various contr-
+rollers and services for reworking async methods and other code snippets to improve quality and functionality.
+
+
+
+DECLERATION OF AI USAGE:
+
+I, the undersigned, hereby declare that I have utilized AI tools, specifically ChatGPT 5.0 LLM, to assist in the development of this code. 
+The AI was employed to generate code snippets, provide suggestions, and enhance the overall quality of my code. I affirm that I have reviewed 
+and tested all AI ggenerated content to ensure its accuracy and functionality within the context of my project. Where used modifications were made
+to ensure the originality of the code and project as a whole, to be made my own.
+
+Link to chat: https://chatgpt.com/share/68aecc38-f4b4-800b-a780-300d011715e4
+
+---EOF---

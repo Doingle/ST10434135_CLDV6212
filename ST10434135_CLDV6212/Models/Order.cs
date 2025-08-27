@@ -5,15 +5,19 @@ namespace ST10434135_CLDV6212.Models
 {
     public class Order : ITableEntity
     {
-        public string? PartitionKey { get; set; }   // e.g. "ORDER"
-        public string? RowKey { get; set; }         // Order ID (Guid)
+        //set partition key and row key as required by ITableEntity
+        public string? PartitionKey { get; set; }   
+        public string? RowKey { get; set; }
 
-        public string? CustomerId { get; set; }     // FK to Customers table (RowKey)
-        public string? ProductId { get; set; }      // FK to Products table (RowKey)
-        public int Quantity { get; set; }           // How many products ordered
+        //unique order identifiers
+        public string? CustomerId { get; set; }     
+        public string? ProductId { get; set; }
+        //keep track of quantity ordered, for stock management on order status change
+        public int Quantity { get; set; }
+        //order status to track progress, default to "Created"
+        public string Status { get; set; } = "Created";
 
-        public string Status { get; set; } = "Created"; // Created, Processing, Completed, Cancelled
-
+        //timestamps for order creation and last update
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
 
@@ -21,7 +25,9 @@ namespace ST10434135_CLDV6212.Models
         public DateTimeOffset? Timestamp { get; set; }
         public ETag ETag { get; set; }
 
+        //non persisted properties for display purposes only
         public string? CustomerName { get; set; }
         public string? ProductName { get; set; }
     }
 }
+//----------------------------------------------------------------EOF-----------------------------------------------------------------\\
